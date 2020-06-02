@@ -427,6 +427,45 @@ accessOrder标志位的作用
 
 这样，我们便把最近使用的Entry放入到了双向链表的后面。多次操作后，双向链表前面的Entry便是最近没有使用的，这样当节点个数满的时候，删除最前面的Entry(head后面的那个Entry)即可，因为它就是最近最少使用的Entry。
 
+	public class LRU<K,V> extends LinkedHashMap<K, V> implements Map<K, V>{
+	
+	    private static final long serialVersionUID = 1L;
+	
+	    public LRU(int initialCapacity,
+	             float loadFactor,
+	                        boolean accessOrder) {
+	        super(initialCapacity, loadFactor, accessOrder);
+	    }
+	
+	    /** 
+	     * @description 重写LinkedHashMap中的removeEldestEntry方法，当LRU中元素多余6个时，
+	     *              删除最不经常使用的元素   
+	     */  
+	    @Override
+	    protected boolean removeEldestEntry(java.util.Map.Entry<K, V> eldest) {
+	        // TODO Auto-generated method stub
+	        if(size() > 6){
+	            return true;
+	        }
+	        return false;
+	    }
+	
+	    public static void main(String[] args) {
+	
+	        LRU<Character, Integer> lru = new LRU<Character, Integer>(
+	                16, 0.75f, true);
+	
+	        String s = "abcdefghijkl";
+	        for (int i = 0; i < s.length(); i++) {
+	            lru.put(s.charAt(i), i);
+	        }
+	        System.out.println("LRU中key为h的Entry的值为： " + lru.get('h'));
+	        System.out.println("LRU的大小 ：" + lru.size());
+	        System.out.println("LRU ：" + lru);
+	    }
+	}
+
+
 ## collections和Arrays工具类 ##
 
 两个工具类分别操作集合和数组，可以进行常用的排序，合并等操作。
