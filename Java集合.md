@@ -52,6 +52,8 @@ linkedlist多用于实现链表。
 
 2、底层数据结构：ArrayList的底层是一个object数组，并且由transient修饰（不会参与序列化）。
 
+	transient Object[] elementData;
+
 3、增删改查
 
 - 增：void add(int index, E element)
@@ -125,7 +127,51 @@ linkedlist多用于实现链表。
 
 ### LinkedList
 
-1、LinkedList是一个双向链表。在LinkedList中提供了两个基本属性size、header。
+1、数据结构
+
+LinkedList是一个双向链表。
+
+#### 属性
+
+在LinkedList中提供了两个基本属性size、header。
+
+	private transient Entry header = new Entry(null, null, null); 
+	private transient int size = 0;
+
+ 其中size表示的LinkedList的大小，header表示链表的表头，Entry为节点对象。
+
+	private static class Entry<E> {
+	    E element;        //元素节点
+	    Entry<E> next;    //下一个元素
+	    Entry<E> previous;  //上一个元素
+	
+	    Entry(E element, Entry<E> next, Entry<E> previous) {
+	        this.element = element;
+	        this.next = next;
+	        this.previous = previous;
+	    }
+	}
+
+#### 构造方法
+
+LinkedList提供了两个构造方法：LinkedList()和LinkedList(Collection<? extends E> c)。
+
+	/**
+	     *  构造一个空列表。
+	     */
+	    public LinkedList() {
+	        header.next = header.previous = header;
+	    }
+	    
+	    /**
+	     *  构造一个包含指定 collection 中的元素的列表，这些元素按其 collection 的迭代器返回的顺序排列。
+	     */
+	    public LinkedList(Collection<? extends E> c) {
+	        this();
+	        addAll(c);
+	    }
+
+
 
 2、增删改查
 
@@ -228,6 +274,12 @@ hashmap是数组和链表的组合结构。
 	  HashMap(int initialCapacity)：构造一个带指定初始容量和默认加载因子 (0.75) 的空 HashMap。
 	
 	  HashMap(int initialCapacity, float loadFactor)：构造一个带指定初始容量和加载因子的空 HashMap。
+
+在这里提到了两个参数：初始容量，加载因子。
+
+这两个参数是影响HashMap性能的重要参数，其中容量表示哈希表中桶的数量，初始容量是创建哈希表时的容量，加载因子是哈希表在其容量自动增加之前可以达到多满的一种尺度，它衡量的是一个散列表的空间的使用程度，负载因子越大表示散列表的装填程度越高，反之愈小。
+
+对于使用链表法的散列表来说，查找一个元素的平均时间是O(1+a)，因此如果负载因子越大，对空间的利用更充分，然而后果是查找效率的降低；如果负载因子太小，那么散列表的数据将过于稀疏，对空间造成严重浪费。系统默认负载因子为0.75，一般情况下我们是无需修改的。
 
 
 ### 扩容
