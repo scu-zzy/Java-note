@@ -1,3 +1,7 @@
+# 单例
+
+java.lang.Runtime#getRuntime()
+
 # 静态工厂 #
 
 Class.forName
@@ -7,6 +11,10 @@ Class.forName
 Collection.iterator方法
 
 ![](https://camo.githubusercontent.com/1ac6c5e11dcb240d2ddca8599a61b9cc9041ba3b/687474703a2f2f68692e6373646e2e6e65742f6174746163686d656e742f3230313130312f332f305f31323934303538373737393945682e676966)
+
+# 策略
+
+java.util.Comparator#compare()
 
 # 适配器模式 #
 

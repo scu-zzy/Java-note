@@ -518,7 +518,7 @@ accessOrder标志位的作用
 	}
 
 
-## collections和Arrays工具类 ##
+## Collections和Arrays工具类 ##
 
 两个工具类分别操作集合和数组，可以进行常用的排序，合并等操作。
 
