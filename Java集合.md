@@ -286,6 +286,8 @@ hashmap是数组和链表的组合结构。
 
 hashmap的默认负载因子是0.75，阈值是16 * 0.75 = 12；初始长度为16；进行两倍扩容。
 
+HashMap的初始容量是2的n次幂,扩容也是2倍的形式进行扩容,是因为容量是2的n次幂,可以使得添加的元素均匀分布在HashMap中的数组上,减少hash碰撞。
+
 Map扩容操作的核心在于重哈希。所谓重哈希是指重新计算原HashMap中的元素在新table数组中的位置并进行复制处理的过程。
 
 ### 增删改查
@@ -363,6 +365,16 @@ chm1.7使用分段锁来控制并发。查询时不加锁。
 
 1.8则放弃使用分段锁，改用cas+synchronized方式实现并发控制，查询时不加锁，插入时如果没有冲突直接cas到成功为止，有冲突则使用synchronized插入。cas：比较和交换（Conmpare And Swap）。
 
+#### JDK1.7
+
+首先将数据分为一段一段的存储，然后给每一段数据配一把锁，当一个线程占用锁访问其中一个段数据时，其他段的数据也能被其他线程访问。
+
+#### JDK1.8
+
+ConcurrentHashMap 取消了 Segment 分段锁，采用 CAS 和 synchronized 来保证并发安全。
+
+synchronized 只锁定当前链表或红黑二叉树的首节点，这样只要 hash 不冲突，就不会产生并发，效率又提升 N 倍。
+
 ### HashMap和HashTable的区别
 
 1、定义：HashTable基于Dictionary类，而HashMap是基于AbstractMap。
@@ -374,6 +386,14 @@ chm1.7使用分段锁来控制并发。查询时不加锁。
 4、初始长度：HashMap的初始长度为16，而HashTable的初始长度为11。HashMap中初始容量必须是2的幂,如果初始化传入的初始容量不是2的幂，将会自动调整为大于出入的初始容量最小的2的幂。
 
 5、hash值计算：HashMap使用自己的计算hash的方法(会依赖key的hashCode方法)，HashTable则使用key的hashCode方法得到。
+
+### ConcurrentHashMap 和 Hashtable 的区别
+
+ConcurrentHashMap 和 Hashtable 的区别主要体现在实现线程安全的方式上不同。
+
+- 底层数据结构： JDK1.7 的 ConcurrentHashMap 底层采用 分段的数组+链表 实现，JDK1.8 采用的数据结构跟 HashMap1.8 的结构一样，数组+链表/红黑二叉树。Hashtable 和 JDK1.8 之前的 HashMap 的底层数据结构类似都是采用 数组+链表 的形式，数组是 HashMap 的主体，链表则是主要为了解决哈希冲突而存在的；
+
+- 实现线程安全的方式（重要）： ① 在 JDK1.7 的时候，ConcurrentHashMap（分段锁） 对整个桶数组进行了分割分段(Segment)，每一把锁只锁容器其中一部分数据，多线程访问容器里不同数据段的数据，就不会存在锁竞争，提高并发访问率。 到了 JDK1.8 的时候已经摒弃了 Segment 的概念，而是直接用 Node 数组+链表+红黑树的数据结构来实现，并发控制使用 synchronized 和 CAS 来操作。（JDK1.6 以后 对 synchronized 锁做了很多优化） 整个看起来就像是优化过且线程安全的 HashMap，虽然在 JDK1.8 中还能看到 Segment 的数据结构，但是已经简化了属性，只是为了兼容旧版本；② Hashtable(同一把锁) :使用 synchronized 来保证线程安全，效率非常低下。当一个线程访问同步方法时，其他线程也访问同步方法，可能会进入阻塞或轮询状态，如使用 put 添加元素，另一个线程不能使用 put 添加元素，也不能使用 get，竞争会越来越激烈效率越低。
 
 ## Set-HashSet ##
 
