@@ -265,7 +265,7 @@ HashMap实现了Map接口，继承AbstractMap。其中Map接口定义了键映�
 
 hashmap是数组和链表的组合结构。
 
-数组是一个Entry数组，entry是k-V键值对类型（包括hash、key、val、next指针），所以一个entry数组存着很多entry节点，一个entry的位置通过key的hashcode方法，再进行hash，最后与表长-1进行相与操作，其实就是取hash值到的后n - 1位，n代表表长是2的n次方。
+数组是一个Entry数组，entry是k-V键值对类型（包括hash、key、val、next指针），所以一个entry数组存着很多entry节点，一个entry的位置通过key的hashcode方法，再进行hash，最后与表长-1进行相与操作，其实就是取hash值到的后n - 1位，n代表表长是2的n次方。JDK1.8在链表长度超过8时会转换为红黑树，进一步提升了性能。
 
 	HashMap提供了三个构造函数：
 	
