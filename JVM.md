@@ -131,6 +131,8 @@ Java 提供了四种强度不同的引用类型。
 
 使用 SoftReference 类来创建软引用。
 
+用于实现对内存敏感的高速缓存。
+
 	Object obj = new Object();
 	SoftReference<Object> sf = new SoftReference<Object>(obj);
 	obj = null;  // 使对象只被软引用关联
@@ -140,6 +142,8 @@ Java 提供了四种强度不同的引用类型。
 被弱引用关联的对象一定会被回收，也就是说它只能存活到下一次垃圾回收发生之前。
 
 使用 WeakReference 类来创建弱引用。
+
+用于引用占用内存空间较大的对象。
 
 	Object obj = new Object();
 	WeakReference<Object> wf = new WeakReference<Object>(obj);
