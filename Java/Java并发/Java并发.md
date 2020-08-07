@@ -430,6 +430,10 @@ ReentrantLock的实现依赖于java同步器框架AQS。AQS使用一个整型的
 - 公平锁获取时，首先会去读这个volatile变量。
 - 非公平锁获取时，首先会用CAS更新这个volatile变量,这个操作同时具有volatile读和volatile写的内存语义。
 
+## 如何避免死锁 ##
+
+使用多线程可以提高性能，但是对一些情况会出现线程不安全的问题，为了避免线程不安全问题一般我们是加锁，然后加锁就会出现死锁问题，一般我们Syncronize或ReentrantLock给代码加锁，Syncronize锁住代码块时JVM级别的，会自己解锁，但是使用ReentrantLock的时候一般是搭配try,catch代码块使用
+
 ## 比较
 
 ### 1. 锁的实现 ###
