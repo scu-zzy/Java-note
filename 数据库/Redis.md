@@ -313,7 +313,7 @@ Redis 将所有时间事件都放在一个无序链表中，通过遍历整个�
 ![](https://cs-notes-1256109796.cos.ap-guangzhou.myqcloud.com/395a9e83-b1a1-4a1d-b170-d081e7bb5bab.png)
 
 
-# 十二、Sentinel #
+# 十二、哨兵模式 #
 
 Sentinel（哨兵）可以监听集群中的服务器，并在主服务器进入下线状态时，自动从从服务器中选举出新的主服务器。
 
