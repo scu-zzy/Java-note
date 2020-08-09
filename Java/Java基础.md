@@ -34,7 +34,9 @@ java中的继承是单继承，即一个类只有一个父类。但是可以通�
 
 ### 重写和重载
 
-方法重载：在同一个类中处理不同数据的多个相同方法名的多态手段。
+方法重载：在Java中，同一个类中的多个方法可以有相同的方法名称，但是有不同的参数列表，这就称为方法重载（method overloading）。
+
+参数列表又叫参数签名，包括参数的类型、参数的个数、参数的顺序，只要有一个不同就叫做参数列表不同。
 
 方法重写：相对继承而言，子类中对父类已经存在的方法进行区别化的修改。
 
@@ -784,7 +786,13 @@ Java中的泛型，只在编译阶段有效。在编译过程中，正确检验�
 
 泛型有三种使用方式，分别为：泛型类、泛型接口、泛型方法
 
-## 泛型通配符
+## 泛型上下边界 ##
+
+在使用泛型的时候，我们还可以为传入的泛型类型实参进行上下边界的限制，如：类型实参只准传入某种类型的父类或某种类型的子类。
+
+为泛型添加上边界，即传入的类型实参必须是指定类型的子类型
+
+### 泛型通配符
 
 类型通配符一般是使用？代替具体的类型实参，注意， 此处的？和Number、String、Integer一样都是一种实际的类型，可以把？看成所有类型的父类。是一种真实的类型。
 
@@ -794,6 +802,58 @@ Java中的泛型，只在编译阶段有效。在编译过程中，正确检验�
 ### 限定通配符
 
 List<? extends T>可以接受任何继承自T的类型的List，而List<? super T>可以接受任何T的父类构成的List。
+
+	public class 泛型通配符与边界 {
+	    public void showKeyValue(Generic<Number> obj){
+	        System.out.println("key value is " + obj.getKey());
+	    }
+	    @Test
+	    public void main() {
+	        Generic<Integer> gInteger = new Generic<Integer>(123);
+	        Generic<Number> gNumber = new Generic<Number>(456);
+	        showKeyValue(gNumber);
+	        //泛型中的子类也无法作为父类引用传入
+	//        showKeyValue(gInteger);
+	    }
+	    //直接使用？通配符可以接受任何类型作为泛型传入
+	    public void showKeyValueYeah(Generic<?> obj) {
+	        System.out.println(obj);
+	    }
+	    //只能传入number的子类或者number
+	    public void showKeyValue1(Generic<? extends Number> obj){
+	        System.out.println(obj);
+	    }
+	
+	    //只能传入Integer的父类或者Integer
+	    public void showKeyValue2(Generic<? super Integer> obj){
+	        System.out.println(obj);
+	    }
+	
+	    @Test
+	    public void testup () {
+	        //这一行代码编译器会提示错误，因为String类型并不是Number类型的子类
+	        //showKeyValue1(generic1);
+	        Generic<String> generic1 = new Generic<String>("11111");
+	        Generic<Integer> generic2 = new Generic<Integer>(2222);
+	        Generic<Float> generic3 = new Generic<Float>(2.4f);
+	        Generic<Double> generic4 = new Generic<Double>(2.56);
+	
+	        showKeyValue1(generic2);
+	        showKeyValue1(generic3);
+	        showKeyValue1(generic4);
+	    }
+	
+	    @Test
+	    public void testdown () {
+	
+	        Generic<String> generic1 = new Generic<String>("11111");
+	        Generic<Integer> generic2 = new Generic<Integer>(2222);
+	        Generic<Number> generic3 = new Generic<Number>(2);
+	//        showKeyValue2(generic1);本行报错，因为String并不是Integer的父类
+	        showKeyValue2(generic2);
+	        showKeyValue2(generic3);
+	    }
+	}
 
 # 注解
 

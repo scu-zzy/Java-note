@@ -1,5 +1,11 @@
 # 一、基础概念 #
 
+## URI ##
+
+URI 包含 URL 和 URN。
+
+![](https://cs-notes-1256109796.cos.ap-guangzhou.myqcloud.com/8441b2c4-dca7-4d6b-8efb-f22efccaf331.png)
+
 ## 请求和响应报文 ##
 
 ### 1. 请求报文 ###
@@ -40,11 +46,21 @@ POST 主要用来传输数据，而 GET 主要用来获取资源。
 
 由于自身不带验证机制，任何人都可以上传文件，因此存在安全性问题，一般不使用该方法。
 
+	PUT /new.html HTTP/1.1
+	Host: example.com
+	Content-type: text/html
+	Content-length: 16
+	
+	<p>New File</p>
+
 ## DELETE ##
 
 删除文件
 
 与 PUT 功能相反，并且同样不带验证机制。
+
+	DELETE /file.html HTTP/1.1
+
 
 # 三、HTTP 状态码 #
 
@@ -93,6 +109,73 @@ POST 主要用来传输数据，而 GET 主要用来获取资源。
 
 有 4 种类型的首部字段：通用首部字段、请求首部字段、响应首部字段和实体首部字段。
 
+## 通用首部字段 ##
+
+首部字段名|	说明
+-|-
+Cache-Control|	控制缓存的行为
+Connection|	控制不再转发给代理的首部字段、管理持久连接
+Date|	创建报文的日期时间
+Pragma|	报文指令
+Trailer|	报文末端的首部一览
+Transfer-Encoding|	指定报文主体的传输编码方式
+Upgrade|	升级为其他协议
+Via|	代理服务器的相关信息
+Warning|	错误通知
+
+## 请求首部字段 ##
+
+首部字段名|	说明
+-|-
+Accept|	用户代理可处理的媒体类型
+Accept-Charset|	优先的字符集
+Accept-Encoding|	优先的内容编码
+Accept-Language|	优先的语言（自然语言）
+Authorization|	Web 认证信息
+Expect|	期待服务器的特定行为
+From|	用户的电子邮箱地址
+Host|	请求资源所在服务器
+If-Match|	比较实体标记（ETag）
+If-Modified-Since|	比较资源的更新时间
+If-None-Match|	比较实体标记（与 If-Match 相反）
+If-Range|	资源未更新时发送实体 Byte 的范围请求
+If-Unmodified-Since|	比较资源的更新时间（与 If-Modified-Since 相反）
+Max-Forwards|	最大传输逐跳数
+Proxy-Authorization|	代理服务器要求客户端的认证信息
+Range|	实体的字节范围请求
+Referer|	对请求中 URI 的原始获取方
+TE|	传输编码的优先级
+User-Agent|	HTTP 客户端程序的信息
+
+## 响应首部字段 ##
+
+首部字段名|	说明
+-|-
+Accept-Ranges|	是否接受字节范围请求
+Age|	推算资源创建经过时间
+ETag|	资源的匹配信息
+Location|	令客户端重定向至指定 URI
+Proxy-Authenticate|	代理服务器对客户端的认证信息
+Retry-After|	对再次发起请求的时机要求
+Server|	HTTP 服务器的安装信息
+Vary|	代理服务器缓存的管理信息
+WWW-Authenticate|	服务器对客户端的认证信息
+
+## 实体首部字段 ##
+
+首部字段名|	说明
+-|-
+Allow|	资源可支持的 HTTP 方法
+Content-Encoding|	实体主体适用的编码方式
+Content-Language|	实体主体的自然语言
+Content-Length|	实体主体的大小
+Content-Location|	替代对应资源的 URI
+Content-MD5|	实体主体的报文摘要
+Content-Range|	实体主体的位置范围
+Content-Type|	实体主体的媒体类型
+Expires|	实体主体过期的日期时间
+Last-Modified|	资源的最后修改日期时间
+
 # 五、具体应用 #
 
 ## 连接管理 ##
@@ -119,6 +202,8 @@ POST 主要用来传输数据，而 GET 主要用来获取资源。
 HTTP 协议是无状态的，主要是为了让 HTTP 协议尽可能简单，使得它能够处理大量事务。HTTP/1.1 引入 Cookie 来保存状态信息。
 
 Cookie 是服务器发送到用户浏览器并保存在本地的一小块数据，它会在浏览器之后向同一服务器再次发起请求时被携带上，用于告知服务端两个请求是否来自同一浏览器。由于之后每次请求都会需要携带 Cookie 数据，因此会带来额外的性能开销（尤其是在移动环境下）。
+
+Cookie 曾一度用于客户端数据的存储，因为当时并没有其它合适的存储办法而作为唯一的存储手段，但现在随着现代浏览器开始支持各种各样的存储方式，Cookie 渐渐被淘汰。新的浏览器 API 已经允许开发者直接将数据存储到本地，如使用 Web storage API（本地存储和会话存储）或 IndexedDB。
 
 ### 1. 用途 ###
 
@@ -148,17 +233,35 @@ Cookie 是服务器发送到用户浏览器并保存在本地的一小块数据�
 - 会话期 Cookie：浏览器关闭之后它会被自动删除，也就是说它仅在会话期内有效。
 - 持久性 Cookie：指定过期时间（Expires）或有效期（max-age）之后就成为了持久性的 Cookie。
 
-### 4. HttpOnly ###
+### 4. 作用域 ###
+
+Domain 标识指定了哪些主机可以接受 Cookie。如果不指定，默认为当前文档的主机（不包含子域名）。如果指定了 Domain，则一般包含子域名。例如，如果设置 Domain=mozilla.org，则 Cookie 也包含在子域名中（如 developer.mozilla.org）。
+
+Path 标识指定了主机下的哪些路径可以接受 Cookie（该 URL 路径必须存在于请求 URL 中）。以字符 %x2F ("/") 作为路径分隔符，子路径也会被匹配。例如，设置 Path=/docs，则以下地址都会匹配：
+
+- /docs
+- /docs/Web/
+- /docs/Web/HTTP
+
+### 5. JavaScript ###
+
+浏览器通过 document.cookie 属性可创建新的 Cookie，也可通过该属性访问非 HttpOnly 标记的 Cookie。
+
+	document.cookie = "yummy_cookie=choco";
+	document.cookie = "tasty_cookie=strawberry";
+	console.log(document.cookie);
+
+### 6. HttpOnly ###
 
 标记为 HttpOnly 的 Cookie 不能被 JavaScript 脚本调用。跨站脚本攻击 (XSS) 常常使用 JavaScript 的 document.cookie API 窃取用户的 Cookie 信息，因此使用 HttpOnly 标记可以在一定程度上避免 XSS 攻击。
 
 	Set-Cookie: id=a3fWa; Expires=Wed, 21 Oct 2015 07:28:00 GMT; Secure; HttpOnly
 
-### 5. Secure ###
+### 7. Secure ###
 
 标记为 Secure 的 Cookie 只能通过被 HTTPS 协议加密过的请求发送给服务端。但即便设置了 Secure 标记，敏感信息也不应该通过 Cookie 传输，因为 Cookie 有其固有的不安全性，Secure 标记也无法提供确实的安全保障。
 
-### 6. Session ###
+### 8. Session ###
 
 除了可以将用户信息通过 Cookie 存储在用户浏览器中，也可以利用 Session 存储在服务器端，存储在服务器端的信息更加安全。
 
@@ -173,7 +276,7 @@ Session 可以存储在服务器上的文件、数据库或者内存中。也可
 
 应该注意 Session ID 的安全性问题，不能让它被恶意攻击者轻易获取，那么就不能产生一个容易被猜到的 Session ID 值。此外，还需要经常重新生成 Session ID。在对安全性要求极高的场景下，例如转账等操作，除了使用 Session 管理用户状态之外，还需要对用户进行重新验证，比如重新输入密码，或者使用短信验证码等方式。
 
-### 7. Cookie 与 Session 选择 ###
+### 9. Cookie 与 Session 选择 ###
 
 - Cookie 只能存储 ASCII 码字符串，而 Session 则可以存储任何类型的数据，因此在考虑数据复杂性时首选 Session；
 - Cookie 存储在浏览器中，容易被恶意查看。如果非要将一些隐私数据存在 Cookie 中，可以将 Cookie 值进行加密，然后在服务器进行解密；
@@ -356,4 +459,15 @@ GET 方法是安全的，而 POST 却不是，因为 POST 的目的是传送实�
 
 ## 可缓存 ##
 
-GET是可缓存的，POST 在多数情况下不可缓存的。
+如果要对响应进行缓存，需要满足以下条件：
+
+- 请求报文的 HTTP 方法本身是可缓存的，包括 GET 和 HEAD，但是 PUT 和 DELETE 不可缓存，POST 在多数情况下不可缓存的。
+- 响应报文的状态码是可缓存的，包括：200, 203, 204, 206, 300, 301, 404, 405, 410, 414, and 501。
+- 响应报文的 Cache-Control 首部字段没有指定不进行缓存。
+
+## XMLHttpRequest ##
+
+> XMLHttpRequest 是一个 API，它为客户端提供了在客户端和服务器之间传输数据的功能。它提供了一个通过 URL 来获取数据的简单方式，并且不会使整个页面刷新。这使得网页只更新一部分页面而不会打扰到用户。XMLHttpRequest 在 AJAX 中被大量使用。
+
+- 在使用 XMLHttpRequest 的 POST 方法时，浏览器会先发送 Header 再发送 Data。但并不是所有浏览器会这么做，例如火狐就不会。
+- 而 GET 方法 Header 和 Data 会一起发送。
