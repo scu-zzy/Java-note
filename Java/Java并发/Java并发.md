@@ -432,7 +432,7 @@ ReentrantLock的实现依赖于java同步器框架AQS。AQS使用一个整型的
 
 ## 如何避免死锁 ##
 
-使用多线程可以提高性能，但是对一些情况会出现线程不安全的问题，为了避免线程不安全问题一般我们是加锁，然后加锁就会出现死锁问题，一般我们Syncronize或ReentrantLock给代码加锁，Syncronize锁住代码块时JVM级别的，会自己解锁，但是使用ReentrantLock的时候一般是搭配try,catch代码块使用
+使用多线程可以提高性能，但是对一些情况会出现线程不安全的问题，为了避免线程不安全问题一般我们是加锁，然后加锁就会出现死锁问题，一般我们Syncronize或ReentrantLock给代码加锁，Syncronize锁住代码块时JVM级别的，会自己解锁，但是使用ReentrantLock的时候一般是搭配try,catch代码块使用，在finally中释放锁。同时配合wait使用，防止一直占有锁。
 
 ## 比较
 
