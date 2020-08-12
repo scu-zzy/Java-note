@@ -38,7 +38,133 @@ ZSET|	有序集合|	添加、获取、删除元素，根据分值范围或者成
 
 ## STRING ##
 
+![](https://cs-notes-1256109796.cos.ap-guangzhou.myqcloud.com/6019b2db-bc3e-4408-b6d8-96025f4481d6.png)
 
+	> set hello world
+	OK
+	> get hello
+	"world"
+	> del hello
+	(integer) 1
+	> get hello
+	(nil)
+
+## LIST ##
+
+![](https://cs-notes-1256109796.cos.ap-guangzhou.myqcloud.com/fb327611-7e2b-4f2f-9f5b-38592d408f07.png)
+
+	> rpush list-key item
+	(integer) 1
+	> rpush list-key item2
+	(integer) 2
+	> rpush list-key item
+	(integer) 3
+	
+	> lrange list-key 0 -1
+	1) "item"
+	2) "item2"
+	3) "item"
+	
+	> lindex list-key 1
+	"item2"
+	
+	> lpop list-key
+	"item"
+	
+	> lrange list-key 0 -1
+	1) "item2"
+	2) "item"
+
+## SET ##
+
+![](https://cs-notes-1256109796.cos.ap-guangzhou.myqcloud.com/cd5fbcff-3f35-43a6-8ffa-082a93ce0f0e.png)
+
+	> sadd set-key item
+	(integer) 1
+	> sadd set-key item2
+	(integer) 1
+	> sadd set-key item3
+	(integer) 1
+	> sadd set-key item
+	(integer) 0
+	
+	> smembers set-key
+	1) "item"
+	2) "item2"
+	3) "item3"
+	
+	> sismember set-key item4
+	(integer) 0
+	> sismember set-key item
+	(integer) 1
+	
+	> srem set-key item2
+	(integer) 1
+	> srem set-key item2
+	(integer) 0
+	
+	> smembers set-key
+	1) "item"
+	2) "item3"
+
+## HASH ##
+
+![](https://cs-notes-1256109796.cos.ap-guangzhou.myqcloud.com/7bd202a7-93d4-4f3a-a878-af68ae25539a.png)
+
+	> hset hash-key sub-key1 value1
+	(integer) 1
+	> hset hash-key sub-key2 value2
+	(integer) 1
+	> hset hash-key sub-key1 value1
+	(integer) 0
+	
+	> hgetall hash-key
+	1) "sub-key1"
+	2) "value1"
+	3) "sub-key2"
+	4) "value2"
+	
+	> hdel hash-key sub-key2
+	(integer) 1
+	> hdel hash-key sub-key2
+	(integer) 0
+	
+	> hget hash-key sub-key1
+	"value1"
+	
+	> hgetall hash-key
+	1) "sub-key1"
+	2) "value1"
+
+## ZSET ##
+
+![](https://cs-notes-1256109796.cos.ap-guangzhou.myqcloud.com/1202b2d6-9469-4251-bd47-ca6034fb6116.png)
+
+	> zadd zset-key 728 member1
+	(integer) 1
+	> zadd zset-key 982 member0
+	(integer) 1
+	> zadd zset-key 982 member0
+	(integer) 0
+	
+	> zrange zset-key 0 -1 withscores
+	1) "member1"
+	2) "728"
+	3) "member0"
+	4) "982"
+	
+	> zrangebyscore zset-key 0 800 withscores
+	1) "member1"
+	2) "728"
+	
+	> zrem zset-key member1
+	(integer) 1
+	> zrem zset-key member1
+	(integer) 0
+	
+	> zrange zset-key 0 -1 withscores
+	1) "member0"
+	2) "982"
 
 # 三、数据结构 #
 
