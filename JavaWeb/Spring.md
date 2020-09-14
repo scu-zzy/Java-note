@@ -123,6 +123,12 @@ Bean不仅可以控制注入到对象中的各种依赖和配置值，还可以�
 
 ## 5.5 Spring 中的 bean 生命周期? ##
 
+1、spring容器读取配置文件并解析，将其注册到Bean工厂。
+2、需要时，通过反射创建bean实例
+3、进行属性值的填充
+4、使用配置文件中的init方法进行初始化
+5、如果要销毁，根据配置文件中的destroy-method执行指定的方法。
+
 - Bean 容器找到配置文件中 Spring Bean 的定义。
 - Bean 容器利用 Java Reflection API 创建一个Bean的实例。
 - 如果涉及到一些属性值 利用 set()方法设置一些属性值。
@@ -135,6 +141,18 @@ Bean不仅可以控制注入到对象中的各种依赖和配置值，还可以�
 - 如果有和加载这个 Bean的 Spring 容器相关的 BeanPostProcessor 对象，执行postProcessAfterInitialization() 方法
 - 当要销毁 Bean 的时候，如果 Bean 实现了 DisposableBean 接口，执行 destroy() 方法。
 - 当要销毁 Bean 的时候，如果 Bean 在配置文件中的定义包含 destroy-method 属性，执行指定的方法。
+
+## 5.6 @Resource 和 @Autowired 的区别 ##
+
+1、 @Autowired与@Resource都可以用来装配bean. 都可以写在字段上,或写在setter方法上。
+
+2、 @Autowired默认按类型（byType）装配（这个注解是属于spring的），默认情况下必须要求依赖对象必须存在，如果要允许null值，可以设置它的required属性为false，如：@Autowired(required=false) 。
+
+3、@Resource（这个注解属于J2EE的），默认按照名称（byName）进行装配，名称可以通过name属性进行指定，如果没有指定name属性，当注解写在字段上时，默认取字段名进行安装名称查找，如果注解写在setter方法上默认取属性名进行装配。当找不到与名称匹配的bean时才按照类型进行装配。但是需要注意的是，如果name属性一旦指定，就只会按照名称进行装配。
+
+
+
+> @Autowired是根据类型进行自动装配的。如果当Spring上下文中存在不止一个UserDao类型的bean时，就会抛出BeanCreationException异常;如果Spring上下文中不存在UserDao类型的bean，也会抛出BeanCreationException异常。
 
 # 6. Spring MVC #
 
